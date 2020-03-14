@@ -1,20 +1,33 @@
 package com.experiment.demo.controller;
 
-import com.experiment.demo.domain.entity.BridgeDataEntity;
+import com.experiment.demo.domain.entity.BridgeReportEntity;
+import com.experiment.demo.service.BridgeDataService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.atomic.AtomicLong;
+import javax.validation.Valid;
 
 @RestController
 public class DataBridgeController {
 
-    private static final String template = "Hello, %s!";
-    private final AtomicLong counter = new AtomicLong();
+    @Autowired
+    BridgeDataService bridgeDataService;
 
-    @GetMapping("/greeting")
-    public BridgeDataEntity greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
-        return new BridgeDataEntity(counter.incrementAndGet(), String.format(template, name));
+    @GetMapping("/connection")
+    public String greeting() {
+        return "Connected.";
+    }
+
+    @PostMapping("/api/content")
+    public BridgeReportEntity showContent(@Valid @RequestBody BridgeReportEntity bridgeReportEntity) {
+        return bridgeDataService.showBridgeDataToUno(bridgeReportEntity);
+    }
+
+    @PostMapping("/api/bridge")
+    public void postBridgeData(@Valid @RequestBody BridgeReportEntity bridgeReportEntity) {
+        bridgeDataService.postBridgeDataToUno(bridgeReportEntity);
     }
 }
